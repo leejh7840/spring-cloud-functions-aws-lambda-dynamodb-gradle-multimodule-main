@@ -1,0 +1,14 @@
+-- To Create a table.
+aws dynamodb create-table --cli-input-json file://Order_Table_Creation_JSON_Script.json
+
+-- To Delete or Put items into a table in a batch.
+aws dynamodb batch-write-item --request-items file://dynamodb_table_value_insert_dml_JSON_Script.json
+
+-- To Fetch All the records in a table
+aws dynamodb execute-statement --statement "SELECT * FROM Orders"
+
+-- To Fetch a particular record in a table.
+aws dynamodb execute-statement --statement "SELECT * FROM Orders where id='V100'"
+
+-- To Delete a table.
+aws dynamodb delete-table --table-name Orders

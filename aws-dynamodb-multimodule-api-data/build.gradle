@@ -1,0 +1,103 @@
+import com.github.jengelman.gradle.plugins.shadow.transformers.PropertiesFileTransformer
+
+buildscript {
+
+    repositories {
+        mavenLocal()
+        jcenter()
+        mavenCentral()
+        maven { url "https://repo.spring.io/snapshot" }
+        maven { url "https://repo.spring.io/milestone" }
+    }
+
+}
+plugins {
+    id 'org.springframework.boot' version '2.6.7' apply false
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'com.github.johnrengelman.shadow' version '7.0.0'
+    id 'java'
+}
+
+group = 'com.nexient'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url "https://repo.spring.io/snapshot" }
+    maven { url "https://repo.spring.io/milestone" }
+
+}
+
+ext['reactor.version'] = "3.1.5.RELEASE"
+
+assemble.dependsOn = [shadowJar]
+
+apply plugin: 'application'
+mainClassName='com.nexient.orders.web.DynamoApplication'
+/*
+shadowJar
+        {
+
+            dependencies {
+                exclude(
+                        dependency("org.springframework.cloud:spring-cloud-function-web:3.2.3"))
+            }
+            // Required for Spring
+            mergeServiceFiles()
+            append 'META-INF/spring.handlers'
+            append 'META-INF/spring.schemas'
+            append 'META-INF/spring.tooling'
+            transform(PropertiesFileTransformer) {
+                paths = ['META-INF/spring.factories']
+                mergeStrategy = "append"
+            }
+        }
+*/
+
+dependencyManagement {
+    imports {
+        mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
+        //mavenBom "org.springframework.cloud:spring-cloud-function-dependencies:3.2.3"
+
+    }
+}
+
+dependencies {
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.junit.jupiter:junit-jupiter:5.8.2'
+    implementation 'org.mockito:mockito-core:4.5.1'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    compileOnly 'org.projectlombok:lombok:1.18.24'
+    annotationProcessor 'org.projectlombok:lombok:1.18.24'
+
+    implementation 'org.springframework.data:spring-data-releasetrain:1.4.6.RELEASE'
+    implementation 'com.amazonaws:aws-lambda-java-events:3.11.0'
+    implementation 'com.amazonaws:aws-lambda-java-core:1.2.1'
+    implementation 'org.springframework.cloud:spring-cloud-dependencies:2021.0.1'
+    implementation 'org.springframework.cloud:spring-cloud-starter-function-web:3.2.3'
+    implementation 'org.springframework.cloud:spring-cloud-function-adapter-aws:3.2.3'
+    implementation 'com.amazonaws:aws-java-sdk-dynamodb:1.12.206'
+    implementation 'com.github.derjust:spring-data-dynamodb:5.1.0'
+
+    implementation 'org.assertj:assertj-core:3.22.0'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
+    testImplementation 'org.springframework:spring-test:5.3.19'
+
+    testImplementation 'org.assertj:assertj-core:3.22.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.8.2'
+    testImplementation 'org.mockito:mockito-junit-jupiter:4.5.1'
+    testImplementation 'org.mockito:mockito-core:4.5.1'
+}
+
+test {
+    useJUnitPlatform()
+}
+
